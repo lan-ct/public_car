@@ -1,0 +1,39 @@
+static_library("car") {
+  sources = [
+    "hal_iot_gpio_ex.c",
+    "pca9555.c",
+    "main.c",
+    "screen.c",
+    "oled_ssd1306.c",
+    "distance.c",
+    "servo.c",
+    "move.c",
+    "gyro.c",
+    "ssd1306.c",
+    "state.c",
+    "//third_party/ssd1306/ssd1306_fonts.c",
+    "cjson_init.c",
+    "iot_main.c",
+    "iot_profile.c",
+    "wifi_connecter.c",
+    "hwCloud.c",
+    "motor_control.c",
+    "wheel_codec.c",
+    "debug_util.c",
+  ]
+
+  include_dirs = [
+    "./",
+    "//utils/native/lite/include",
+    "//kernel/liteos_m/kal/cmsis",
+    "//base/iot_hardware/peripheral/interfaces/kits",
+    "//device/soc/hisilicon/hi3861v100/sdk_liteos/include/base",
+    "//third_party/ssd1306",
+    "//device/soc/hisilicon/hi3861v100/sdk_liteos/third_party/lwip_sack/include/lwip",
+    "//third_party/cJSON",
+    "//device/hisilicon/hispark_pegasus/sdk_liteos/third_party/mbedtls/include/mbedtls",
+    "//foundation/communication/wifi_lite/interfaces/wifiservice",
+    "//device/hisilicon/hispark_pegasus/sdk_liteos/third_party/paho.mqtt.c/include/mqtt",
+    "//device/hisilicon/hispark_pegasus/sdk_liteos/third_party/libcoap/include/coap2",
+    ]
+}

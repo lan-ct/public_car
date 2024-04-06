@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "deveco-device-tool-debug",
+      "request": "launch",
+      "DevEcoDebugInitPath": "${workspaceRoot}/.deveco/.debug-cache/hi3861",
+      "servertype": "jlink",
+      "name": "hi3861: DevEco GDB Launch",
+      "executable": "D:/a/src/out/hispark_pegasus/wifiiot_hispark_pegasus/target.elf",
+      "toolchainBinDir": "",
+      "projectEnvName": "hi3861",
+      "coreDir": "D:/app/DevEco-Device-Tool/core",
+      "preLaunchTask": "deveco: run debug server - hi3861",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "type": "deveco-device-tool-debug",
+      "request": "attach",
+      "DevEcoDebugInitPath": "${workspaceRoot}/.deveco/.debug-cache/hi3861",
+      "servertype": "jlink",
+      "name": "hi3861: DevEco GDB Attach",
+      "executable": "D:/a/src/out/hispark_pegasus/wifiiot_hispark_pegasus/target.elf",
+      "toolchainBinDir": "",
+      "projectEnvName": "hi3861",
+      "coreDir": "D:/app/DevEco-Device-Tool/core",
+      "preLaunchTask": "deveco: run debug server - hi3861",
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "d:/1/test/src/applications/sample/wifi-iot/app/imu_square_demo",
+      "program": "d:/1/test/src/applications/sample/wifi-iot/app/imu_square_demo/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
