@@ -49,7 +49,7 @@ typedef enum {
 typedef struct {
     int pin_name_a;
     int pin_name_b;
-    int16_t counter;
+    long long counter;
     GpioIntEdgePolarity polar;
 } WHEEL_CODEC_STRUCT;
 

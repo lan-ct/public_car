@@ -34,8 +34,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/1/test/src/applications/sample/wifi-iot/app/imu_square_demo",
-      "program": "d:/1/test/src/applications/sample/wifi-iot/app/imu_square_demo/build/Debug/outDebug",
+      "cwd": "d:/1/public_car/src/applications/sample/wifi-iot/app/car",
+      "program": "d:/1/public_car/src/applications/sample/wifi-iot/app/car/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

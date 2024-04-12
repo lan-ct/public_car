@@ -20,6 +20,7 @@ static_library("car") {
     "motor_control.c",
     "wheel_codec.c",
     "debug_util.c",
+    "move_scan.c",
   ]
 
   include_dirs = [

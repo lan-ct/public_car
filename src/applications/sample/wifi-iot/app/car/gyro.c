@@ -167,24 +167,27 @@ void IMU_YAW_CAL(float gyroZ)
     yaw += temp;
     /* 57.32 */
     //yaw_conv = yaw * 57.32;
-    yaw_conv = yaw *1.36 * 57.32/1.02;
+    //yaw_conv = yaw *1.36 * 57.32/1.02*1.5;
+    yaw_conv = yaw *114.251;
+    ////yaw_conv = yaw * 57.32*3;//
     // 360°一个循环
-    if (fabs(yaw_conv) > 360.0f) {
+    while (fabs(yaw_conv) > 360.0f) {
         if ((yaw_conv) < 0) {
             yaw_conv += 360.0f; // 360°一个循环
-        } else {
+        } else if ((yaw_conv) > 0) 
+        {
             yaw_conv -= 360.0f; // 360°一个循环
         }
     }
     //printf("yaw_conv:%.02f\n", yaw_conv);
-    //static char line[32] = {0};
-    //ssd1306_SetCursor(0, 30); // 30行0列开始
-    //int ret = snprintf(line, sizeof(line), "yaw_conv:%.2f", yaw_conv);
+    /*static char line[32] = {0};
+    ssd1306_SetCursor(0, 30); // 30行0列开始
+    int ret = snprintf(line, sizeof(line), "yaw_conv:%.2f", yaw_conv);
     //if (ret != 14) { // 字符串长度为14
        // printf("ret = %d\r\n", ret);
     //}
-   // ssd1306_DrawString(line, Font_7x10, White);
-   // ssd1306_UpdateScreen();/**/
+    ssd1306_DrawString(line, Font_7x10, White);
+    ssd1306_UpdateScreen();*/
 }
 
 float get_yaw_conv(void){

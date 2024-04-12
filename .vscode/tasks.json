@@ -13,7 +13,7 @@
                 "--target",
                 "clean",
                 "--project-dir",
-                "D:\\1\\test",
+                "D:\\1\\public_car",
                 "--environment",
                 "hi3861"
             ]
@@ -28,7 +28,7 @@
             "args": [
                 "run",
                 "--project-dir",
-                "D:\\1\\test",
+                "D:\\1\\public_car",
                 "--environment",
                 "hi3861"
             ]
@@ -47,7 +47,7 @@
                 "--target",
                 "buildprog",
                 "--project-dir",
-                "D:\\1\\test",
+                "D:\\1\\public_car",
                 "--environment",
                 "hi3861"
             ]
@@ -64,7 +64,7 @@
                 "--target",
                 "upload",
                 "--project-dir",
-                "D:\\1\\test",
+                "D:\\1\\public_car",
                 "--environment",
                 "hi3861"
             ]
@@ -82,7 +82,7 @@
                 "--encoding",
                 "UTF-8",
                 "--project-dir",
-                "D:\\1\\test",
+                "D:\\1\\public_car",
                 "--environment",
                 "hi3861"
             ]
@@ -108,7 +108,7 @@
                 "--target",
                 "stackAnalysis",
                 "--project-dir",
-                "D:\\1\\test",
+                "D:\\1\\public_car",
                 "--environment",
                 "hi3861"
             ]
@@ -125,7 +125,7 @@
                 "--target",
                 "imageAnalysis",
                 "--project-dir",
-                "D:\\1\\test",
+                "D:\\1\\public_car",
                 "--environment",
                 "hi3861"
             ]
