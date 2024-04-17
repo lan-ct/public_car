@@ -168,16 +168,16 @@ void I2CBusExampleEntry(void)
    // }
 
     // 功能按键
-    attr.name = "FunKeyTask";
+    /*attr.name = "FunKeyTask";
     if(osThreadNew((osThreadFunc_t)FunKeyTask, NULL, &attr) == NULL) {
         printf("[FunKeyTask] Failed to create FunKeyTask!\n");
-    }
+    }*/
 
     // 陀螺仪
     attr.name = "LSM6DSTask";
     if(osThreadNew((osThreadFunc_t)LSM6DSTask, NULL, &attr) == NULL) {
         printf("[LSM6DSTask] Failed to create LSM6DSTask!\n");
-    }/**/
+    }
 
     //两轮子行进情况
     init_wheel_codec();

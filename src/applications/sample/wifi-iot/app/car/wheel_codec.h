@@ -23,6 +23,7 @@ extern void init_wheel_codec(void);
 extern int16_t get_wheel_cnt_left(void);
 extern int16_t get_wheel_cnt_right(void);
 extern void get_wheel_cnt(int16_t *left, int16_t *right);
+extern void setStop(void (*func) (void),short dst_wheel);
 
 #endif
 

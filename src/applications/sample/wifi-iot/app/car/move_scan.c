@@ -2,6 +2,11 @@
 #include"move_scan.h"
 #include"servo.h"
 #include"distance.h"
+#define LEFT 0
+#define RIGHT 1
+#define FRONT 2
+#define RESTART 1
+#define CONTINUE 0
 float get_distance(short direction){
     switch (direction)
     {
@@ -31,12 +36,12 @@ struct scan_message scan(void){
     printf("distance,left:%f,right:%f,front:%f",message.left,message.right,message.front);
     return message;
 }
-void step(void){
+void step(char restart){
     int cycles=100;
-    moveForward_wheel(cycles,NORMAL_SPEED);
+    moveForward_wheel(cycles,NORMAL_SPEED,restart);
 }
-struct scan_message step_scan(void){
-    step();
+struct scan_message step_scan(char restart){
+    step(restart);
     return scan();
 }
 

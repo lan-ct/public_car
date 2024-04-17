@@ -1,0 +1,1 @@
+void process_message(int qos, char *topic, char *payload);

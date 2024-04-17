@@ -82,7 +82,7 @@ void moveForward(int times,int speed){
 
    car_stop();
 }
-void moveForward_wheel(int cycles,int speed){
+/*void moveForward_wheel(int cycles,int speed){
    int left_speed=speed,right_speed=speed;
    int last=left_wheel;
    initPID(&yawPID_forward,0.1,0,0.01);
@@ -92,8 +92,26 @@ void moveForward_wheel(int cycles,int speed){
       getBalanceSpeed_forward(&left_speed,&right_speed,speed);
       car_forward(left_speed,right_speed);
       TaskMsleep(DELYA_LOOP_MS);
-   } 
-
+   }  
+   car_stop();
+}*/
+void moveForward_wheel(int cycles,int speed,char restart){
+   int left_speed=speed,right_speed=speed;
+   short last=get_wheel_cnt_left();
+   short now=last;
+   if(restart){
+      initPID(&yawPID_forward,0.1,0,0.01);
+      direct_conv= get_yaw_conv();
+   }
+   printf("before:%d\n",now);
+   while(now-last<cycles){
+      //get_wheel_cnt(&left_wheel,&right_wheel);
+      now=get_wheel_cnt_left();
+      getBalanceSpeed_forward(&left_speed,&right_speed,speed);
+      car_forward(left_speed,right_speed);
+      TaskMsleep(DELYA_LOOP_MS);
+   }  
+   printf("later:%d\n",now);
    car_stop();
 }
 void getBalanceSpeed_forward(int*left_speed,int*right_speed,int speed){
@@ -288,7 +306,7 @@ void leftStopTurn(char left){
         wheel_dst=wheel_begin+go;
         car_forward(0,NORMAL_SPEED_TURN);
         while(wheel_dst>get_wheel_cnt_right()){
-         TaskMsleep(20);
+         TaskMsleep(DELYA_LOOP_MS_TURN);
         }
     }
     else{
@@ -326,21 +344,27 @@ void rightStopTurn(char left){
     short go=770;//800
     short wheel_begin=get_wheel_cnt_left();
     short wheel_dst=0;
+    //printf("now:%d\n",wheel_begin);
+    printf("begin:%d\n",get_wheel_cnt_left());
     if(left>0){
-        wheel_dst=wheel_begin+go;
-        car_forward(0,NORMAL_SPEED_TURN);
-        while(wheel_dst>get_wheel_cnt_right()){
-         TaskMsleep(20);
-        }
+        wheel_dst=wheel_begin-go;
+        //setStop(car_stop,wheel_dst);
+        car_backward(NORMAL_SPEED_TURN,0);
+        while(wheel_dst<get_wheel_cnt_left()){
+         TaskMsleep(DELYA_LOOP_MS_TURN);
+        }////////
     }
     else{
-        wheel_dst=wheel_begin-go;
-        car_backward(0,NORMAL_SPEED_TURN);
-        while(wheel_dst<get_wheel_cnt_right()){
+        wheel_dst=wheel_begin+go;
+        //setStop(car_stop,wheel_dst);
+        car_forward(NORMAL_SPEED_TURN,0); 
+        while(wheel_dst>get_wheel_cnt_left()){
          TaskMsleep(DELYA_LOOP_MS_TURN);
-        }
+         printf("now:%d\n",get_wheel_cnt_left());
+        }////////
     }
     car_stop();
+    printf("later:%d\n",get_wheel_cnt_left());
 }
 
 //6左后 5左前

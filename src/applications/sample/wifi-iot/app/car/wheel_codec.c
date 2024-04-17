@@ -33,33 +33,47 @@
 #include "iot_gpio_ex.h"
 #include "debug_util.h"
 #include "wheel_codec.h"
-
+#include "iot_pwm.h"
 /*
  * iot_gpio.h的极性设置与示波器实测是反的, 重新定义一个类型
  *
  * The polarity setting in iot_gpio.h is actually opposite to the measurement of the oscilloscope.
  * Redefine a type
  */
-typedef enum {
+
+void (*stop_func)(void) = NULL;
+short dst = 0;
+void setStop(void (*func)(void), short dst_wheel)
+{
+    stop_func = func;
+    dst = dst_wheel;
+}
+void clean(void)
+{
+    stop_func = NULL;
+    dst = 0;
+}
+typedef enum
+{
     /* Interrupt at a high level or rising edge */
     IOT_GPIO_INT_EDGE_RISE = 0,
     IOT_GPIO_INT_EDGE_FALL
 } GpioIntEdgePolarity;
 
-typedef struct {
+typedef struct
+{
     int pin_name_a;
     int pin_name_b;
-    long long counter;
+    int16_t counter;
     GpioIntEdgePolarity polar;
 } WHEEL_CODEC_STRUCT;
 
-
 #if WHEEL_DIRECTION_REVERT
-#define COUNT_POSITVE      (-1)
-#define COUNT_NEGTITVE      (1)
+#define COUNT_POSITVE (-1)
+#define COUNT_NEGTITVE (1)
 #else
-#define COUNT_POSITVE       (1)
-#define COUNT_NEGTITVE      (-1)
+#define COUNT_POSITVE (1)
+#define COUNT_NEGTITVE (-1)
 #endif
 
 WHEEL_CODEC_STRUCT g_wheel_left;
@@ -75,25 +89,82 @@ void INIT_GPIO_IN(IotIoName NAME, unsigned char FUNC)
 
 void wheel_codec_svr(char *arg)
 {
-    //printf("callback");
+    // printf("callback");
     IotGpioValue value_b;
-    uint32_t * const reg = (uint32_t *)(0x5000603C); // reg GPIO_INT_POLARITY
-    WHEEL_CODEC_STRUCT* pt = (WHEEL_CODEC_STRUCT*)(arg);
+    uint32_t *const reg = (uint32_t *)(0x5000603C); // reg GPIO_INT_POLARITY
+    WHEEL_CODEC_STRUCT *pt = (WHEEL_CODEC_STRUCT *)(arg);
 
-    if (IoTGpioGetInputVal(pt -> pin_name_b, &value_b) != IOT_SUCCESS) {
+    if (IoTGpioGetInputVal(pt->pin_name_b, &value_b) != IOT_SUCCESS)
+    {
         printf("read wheel right SIGNAL B read fail\n");
     }
 
-    if (value_b == 0) {
-        pt -> counter += (pt -> polar == IOT_GPIO_INT_EDGE_RISE) ? COUNT_POSITVE : COUNT_NEGTITVE;
-    } else {
-        pt -> counter += (pt -> polar == IOT_GPIO_INT_EDGE_RISE) ? COUNT_NEGTITVE : COUNT_POSITVE;
+    if (value_b == 0)
+    {
+        pt->counter += (pt->polar == IOT_GPIO_INT_EDGE_RISE) ? COUNT_POSITVE : COUNT_NEGTITVE;
+    }
+    else
+    {
+        pt->counter += (pt->polar == IOT_GPIO_INT_EDGE_RISE) ? COUNT_NEGTITVE : COUNT_POSITVE;
     }
     /* 加速中断极性转换时间 */
-    pt -> polar ^= 1;
-    if (pt -> polar) {
+    pt->polar ^= 1;
+    if (pt->polar)
+    {
         *reg |= (1 << pt->pin_name_a);
-    } else {
+    }
+    else
+    {
+        *reg &= ~(1 << pt->pin_name_a);
+    }
+}
+void wheel_codec_svr_left(char *arg)
+{
+    // printf("callback");
+    IotGpioValue value_b;
+    uint32_t *const reg = (uint32_t *)(0x5000603C); // reg GPIO_INT_POLARITY
+    WHEEL_CODEC_STRUCT *pt = (WHEEL_CODEC_STRUCT *)(arg);
+
+    if (IoTGpioGetInputVal(pt->pin_name_b, &value_b) != IOT_SUCCESS)
+    {
+        printf("read wheel right SIGNAL B read fail\n");
+    }
+
+    if (value_b == 0)
+    {
+        pt->counter += (pt->polar == IOT_GPIO_INT_EDGE_RISE) ? COUNT_POSITVE : COUNT_NEGTITVE;
+
+        if (stop_func != NULL && pt->counter <= dst)
+        {
+            printf("hereIM");
+            IoTPwmStop(0);
+            IoTPwmStop(1);
+            IoTPwmStop(2);
+            IoTPwmStop(3);
+            clean();
+        }
+    }
+    else
+    {
+        pt->counter += (pt->polar == IOT_GPIO_INT_EDGE_RISE) ? COUNT_NEGTITVE : COUNT_POSITVE;
+        if (stop_func != NULL && pt->counter >= dst)
+        {
+            // stop_func();
+            IoTPwmStop(0);
+            IoTPwmStop(1);
+            IoTPwmStop(2);
+            IoTPwmStop(3);
+            clean();
+        }
+    }
+    /* 加速中断极性转换时间 */
+    pt->polar ^= 1;
+    if (pt->polar)
+    {
+        *reg |= (1 << pt->pin_name_a);
+    }
+    else
+    {
         *reg &= ~(1 << pt->pin_name_a);
     }
 }
@@ -123,18 +194,16 @@ void init_wheel_codec(void)
     g_wheel_left.pin_name_b = WHEEL_LEFT_CB_PIN_NAME;
     g_wheel_right.pin_name_a = WHEEL_RIGHT_CA_PIN_NAME;
     g_wheel_right.pin_name_b = WHEEL_RIGHT_CB_PIN_NAME;
-    
+
     INIT_GPIO_IN(WHEEL_LEFT_CA_PIN_NAME, WHEEL_LEFT_CA_PIN_FUNC);
     INIT_GPIO_IN(WHEEL_LEFT_CB_PIN_NAME, WHEEL_LEFT_CB_PIN_FUNC);
     INIT_GPIO_IN(WHEEL_RIGHT_CA_PIN_NAME, WHEEL_RIGHT_CA_PIN_FUNC);
     INIT_GPIO_IN(WHEEL_RIGHT_CB_PIN_NAME, WHEEL_RIGHT_CB_PIN_FUNC);
-    
-    IoTGpioRegisterIsrFunc(WHEEL_RIGHT_CA_PIN_NAME, IOT_INT_TYPE_EDGE, 
+
+    IoTGpioRegisterIsrFunc(WHEEL_RIGHT_CA_PIN_NAME, IOT_INT_TYPE_EDGE,
                            IOT_GPIO_INT_EDGE_RISE, wheel_codec_svr, (char *)(&g_wheel_right));
     IoTGpioRegisterIsrFunc(WHEEL_LEFT_CA_PIN_NAME, IOT_INT_TYPE_EDGE,
                            IOT_GPIO_INT_EDGE_RISE, wheel_codec_svr, (char *)(&g_wheel_left));
-    
 
     printf("init_wheel_codec\n");
 }
-
