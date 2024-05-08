@@ -2,11 +2,6 @@
 #include"move_scan.h"
 #include"servo.h"
 #include"distance.h"
-#define LEFT 0
-#define RIGHT 1
-#define FRONT 2
-#define RESTART 1
-#define CONTINUE 0
 float get_distance(short direction){
     switch (direction)
     {

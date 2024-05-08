@@ -311,3 +311,27 @@ int IoTProfilePropertyReport(char *deviceID, IoTProfileService *payload)
     cJSON_free(msg);
     return ret;
 }
+#define CN_PROFILE_TOPICFMT_PROPERTYUP  "$oc/devices/%s/sys/messages/up"
+int IoTProfilePropertyUp(char *deviceID, IoTProfileService *payload)
+{
+    int ret = -1;
+    char *topic;
+    char *msg;
+
+    if ((deviceID == NULL) || (payload == NULL) || (payload->serviceID == NULL) || (payload->serviceProperty == NULL)) {
+        return ret;
+    }
+    topic = MakeTopic(CN_PROFILE_TOPICFMT_PROPERTYUP, deviceID, NULL);
+    if (topic == NULL) {
+        return ret;
+    }
+    msg = MakeProfilePropertyReport(payload);
+    if ((topic != NULL) && (msg != NULL)) {
+        printf("send mes\n");
+        ret = IotSendMsg(0, topic, msg);
+    }
+
+    hi_free(0, topic);
+    cJSON_free(msg);
+    return ret;
+}

@@ -110,6 +110,7 @@ void moveForward_wheel(int cycles,int speed,char restart){
       getBalanceSpeed_forward(&left_speed,&right_speed,speed);
       car_forward(left_speed,right_speed);
       TaskMsleep(DELYA_LOOP_MS);
+      printf("wheel:%d\n",now);
    }  
    printf("later:%d\n",now);
    car_stop();
